@@ -2,6 +2,12 @@
 
 Scripts for the home
 
+## develop
+
+```bash
+uvicorn main:app --reload
+```
+
 ## clockify hooks
 
 any timer started | https://sf8do.mooo.com/habitat/clockify/start
