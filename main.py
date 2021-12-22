@@ -1,4 +1,9 @@
+import os
 from fastapi import FastAPI
+from dotenv import load_dotenv
+import requests
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -9,11 +14,13 @@ async def root():
 # any timer started
 @app.post("/habitat/clockify/start")
 async def timeIn():
+  requests.get(os.getenv('HUBITAT_CLOCK_IN'))
   return {"message": "started"}
 
 # any timer stopped
 @app.post("/habitat/clockify/stop")
 async def timeOut():
+  requests.get(os.getenv('HUBITAT_CLOCK_OUT'))
   return {"message": "stopped"}
 
 
