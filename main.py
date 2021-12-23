@@ -32,14 +32,14 @@ async def location(device, loc):
 
 
 @app.get("/habitat/phone-ring/{device}")
-async def location(device, loc):
+async def ring(device):
   msg = "ringing {}".format(device)
   print(msg)
   return {"message": msg}
 
 
-@app.get("/habitat/battery/{device}")
-async def location(device, loc):
-  msg = "ringing {}".format(device)
+@app.get("/habitat/battery-low/{device}")
+async def lowBattery(device):
+  msg = "low battery {}".format(device)
   print(msg)
   return {"message": msg}
