@@ -1,4 +1,4 @@
-- name: setup service
+- name: setup systemd service
   hosts: prod
   vars:
     USER_NAME: habitat
@@ -139,4 +139,5 @@
   - name: Make sure hook service unit is running
     ansible.builtin.systemd:
       state: started
-      name: habitat-py 
+      name: habitat-py
+      

@@ -1,0 +1,48 @@
+- name: setup git action CI
+  hosts: prod
+  vars:
+    USER_NAME: habitat
+    PROJECT_NAME: habitat-py
+    GIT_OWNER: dmitrytorba
+    GIT_REPO: {{ PROJECT_NAME }}.git
+    HOME_PATH: "/home/{{ USER_NAME }}"
+    CLONE_DEST: "{{ HOME_PATH }}/{{ PROJECT_NAME }}"
+    GITHUB_ACCESS_TOKEN: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63613363386163656537633566393433613261303365653764343234346531346631356464343835
+          6331303462613838343738333532623031396238353434320a353337653737623836323936383432
+          32326361323739333537626362303462646533323732353333323838626233623064643965363732
+          6436366134363333390a373462633131613933653762393837646364356430373134333661363633
+          64356462316432326138363730663835336530303138633836333831386461653139383735616338
+          3130356134313564646162396464346338323932306561356465
+    KEY_PATH: "{{ HOME_PATH }}/.ssh/id_ecdsa"
+    KNOWN_HOSTS_PATH: "{{ HOME_PATH }}/.ssh/known_hosts"
+    KEY_TITLE: "{{ USER_NAME }}-ansible"
+  tasks:
+    # https://docs.github.com/en/rest/actions/secrets#get-a-repository-public-key
+    - name: Get GitHub secrets encryption key
+      uri:
+        url: https://api.github.com/repos/{{ GIT_OWNER }}/{{ GIT_REPO }}/actions/secrets/public-key
+        status_code: 200
+        validate_certs: no
+        method: GET
+        headers:
+          Content-Type: "application/json"
+          Authorization: "token {{ GITHUB_ACCESS_TOKEN }}"
+        register: github_encryption_key
+    # https://docs.github.com/en/rest/actions/secrets#create-or-update-a-repository-secret
+    - name: Encrypt key
+      command: "./encrypt-github.py {{ github_encryption_key.stdout }} {{ KEY_PATH }}"
+      register: key_content
+    - name: Add key as github secret
+      uri:
+        url: https://api.github.com/repos/{{ GIT_OWNER }}/{{ GIT_REPO }}/actions/secrets/PROD_SSH_KEY
+        status_code: 201
+        validate_certs: no
+        method: POST
+        body:
+          encrypted_value: "{{ key_content.stdout }}"
+        body_format: json
+        headers:
+          Content-Type: "application/json"
+          Authorization: "token {{ GITHUB_ACCESS_TOKEN }}"
