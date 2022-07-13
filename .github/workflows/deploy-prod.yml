@@ -1,0 +1,23 @@
+name: deploy-prod
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: appleboy/ssh-action@master
+      with:
+        script_stop: true
+        host: sf8do.mooo.com
+        username: habitat
+        port: 22
+        key: ${{ secrets.PROD_SSH_KEY }}
+        script: |
+          cd /home/habitat/habitat-py
+          git checkout master
+          git pull origin master
+          sudo service habitat-py restart
