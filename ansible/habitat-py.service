@@ -1,0 +1,14 @@
+[Unit]
+Description = Habitat Python Service
+After = network.target
+
+[Service]
+User = habitat
+Group = habitat
+WorkingDirectory = /home/habitat/habitat-py
+ExecStart = /home/habitat/habitat-py/venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 5001 --root-path /habitat
+EnvironmentFile = /home/habitat/habitat-py/.env
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

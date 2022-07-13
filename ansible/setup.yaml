@@ -1,0 +1,142 @@
+- name: setup service
+  hosts: prod
+  vars:
+    USER_NAME: habitat
+    PROJECT_NAME: habitat-py
+    GIT_REPO: git@github.com:dmitrytorba/{{ PROJECT_NAME }}.git
+    HOME_PATH: "/home/{{ USER_NAME }}"
+    CLONE_DEST: "{{ HOME_PATH }}/{{ PROJECT_NAME }}"
+    GITHUB_ACCESS_TOKEN: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63613363386163656537633566393433613261303365653764343234346531346631356464343835
+          6331303462613838343738333532623031396238353434320a353337653737623836323936383432
+          32326361323739333537626362303462646533323732353333323838626233623064643965363732
+          6436366134363333390a373462633131613933653762393837646364356430373134333661363633
+          64356462316432326138363730663835336530303138633836333831386461653139383735616338
+          3130356134313564646162396464346338323932306561356465
+    KEY_PATH: "{{ HOME_PATH }}/.ssh/id_ecdsa"
+    KNOWN_HOSTS_PATH: "{{ HOME_PATH }}/.ssh/known_hosts"
+    KEY_TITLE: "{{ USER_NAME }}-ansible"
+  tasks:
+  - name: create group
+    group:
+      name: "{{ USER_NAME }}"
+      state: present
+  
+  - name: create user
+    user:
+      name: "{{ USER_NAME }}"
+      groups: "{{ USER_NAME }}"
+      shell: /bin/bash
+      append: yes
+      state: present         
+      createhome: yes      
+      home: "{{ HOME_PATH }}"
+  
+  - name: Check if SSH key is already present
+    stat:
+      path: "{{ KEY_PATH }}"
+    register: key_stat_result
+  
+  - name: Creates .ssh directory
+    file:
+      path: "{{ HOME_PATH }}/.ssh"
+      state: directory
+    when: not key_stat_result.stat.exists
+
+  - name: Generate SSH key for accessing GitHub
+    command: "ssh-keygen -t ecdsa -f {{ KEY_PATH }} -N ''"
+    when: not key_stat_result.stat.exists
+  
+  - name: Get key content
+    command: "cat {{ KEY_PATH }}.pub"
+    register: key_content
+
+  - name: Check if known_host exists
+    stat:
+      path: "{{ KNOWN_HOSTS_PATH }}"
+    register: known_hosts_stat
+
+  - name: Create known_hosts if it doesn't exist
+    file:
+      path: "{{ KNOWN_HOSTS_PATH }}"
+      state: touch
+    when: not known_hosts_stat.stat.exists
+
+  - name: Get the content of known hosts
+    shell: "cat {{ KNOWN_HOSTS_PATH }} | grep github.com"
+    register: host_stat
+    failed_when: host_stat.rc > 1
+    
+  - name: Modify known hosts
+    block:
+    - name: Fetch GitHub public key
+      command: ssh-keyscan -T 10 github.com
+      register: keyscan
+
+    - name: Add GitHub public key to ssh known_hosts
+      lineinfile:
+        path: "{{ KNOWN_HOSTS_PATH }}"
+        create: yes
+        line: "{{ item }}"
+      with_items: '{{ keyscan.stdout_lines }}'
+    when: host_stat.rc == 1
+    
+  - name: Check if repo exists
+    stat:
+      path: "{{ CLONE_DEST }}"
+    register: repo
+    
+  - name: Add SSH public key to GitHub account
+    uri:
+      url: https://api.github.com/user/keys
+      status_code: 201
+      validate_certs: no
+      method: POST
+      body:
+        title: "{{ KEY_TITLE }}"
+        key: "{{ key_content.stdout }}"
+      body_format: json
+      headers:
+        Content-Type: "application/json"
+        Authorization: "token {{ GITHUB_ACCESS_TOKEN }}"
+    when: not repo.stat.exists
+
+  - name: Clone the repository
+    shell: GIT_SSH_COMMAND="ssh -i {{ KEY_PATH }} -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git clone {{ GIT_REPO }} {{ CLONE_DEST }}
+    when: not repo.stat.exists
+
+  - name: Manually create the initial virtualenv
+    command:
+      cmd: "python3 -m venv {{CLONE_DEST}}/venv"
+      creates: "{{CLONE_DEST}}/venv"
+      
+  - name: Install requirements
+    pip: 
+      requirements="{{CLONE_DEST}}/requirements.txt"
+      virtualenv="{{CLONE_DEST}}/venv"
+      
+  - name: Copy keys to server
+    copy:
+      src: prod.env
+      dest: "{{CLONE_DEST}}/.env"
+      owner: cm
+      group: cm
+
+  - name: Copy systemd service file to server
+    copy:
+      src: habitat-py.service
+      dest: /etc/systemd/system
+      owner: root
+      group: root
+      
+  - name: Enable service 
+    ansible.builtin.systemd:
+      name: habitat-py
+      enabled: yes
+      masked: no
+      
+  - name: Make sure hook service unit is running
+    ansible.builtin.systemd:
+      state: started
+      name: habitat-py 
