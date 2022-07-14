@@ -105,6 +105,14 @@
   - name: Clone the repository
     shell: GIT_SSH_COMMAND="ssh -i {{ KEY_PATH }} -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git clone {{ GIT_REPO }} {{ CLONE_DEST }}
     when: not repo.stat.exists
+    
+  - name: Recursively change ownership of repo
+    file:
+      path: "{{ CLONE_DEST }}"
+      state: directory
+      recurse: yes
+      owner: "{{ USER_NAME }}"
+      group: "{{ USER_NAME }}"
 
   - name: Manually create the initial virtualenv
     command:
