@@ -82,6 +82,14 @@
       with_items: '{{ keyscan.stdout_lines }}'
     when: host_stat.rc == 1
     
+  - name: Recursively change ownership of .ssh
+    file:
+      path: "{{ HOME_PATH }}/.ssh"
+      state: directory
+      recurse: yes
+      owner: "{{ USER_NAME }}"
+      group: "{{ USER_NAME }}"
+
   - name: Check if repo exists
     stat:
       path: "{{ CLONE_DEST }}"
