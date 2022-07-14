@@ -20,4 +20,4 @@ jobs:
           cd /home/habitat/habitat-py
           git checkout master
           git pull origin master
-          systemctl --user restart habitat-py.service habitat-py 
+          sudo service habitat-py restart

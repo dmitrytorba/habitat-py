@@ -11,4 +11,4 @@ EnvironmentFile = /home/habitat/habitat-py/.env
 Restart = always
 
 [Install]
-WantedBy=default.target
+WantedBy = multi-user.target
