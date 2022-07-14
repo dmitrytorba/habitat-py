@@ -18,10 +18,15 @@
     KNOWN_HOSTS_PATH: "{{ HOME_PATH }}/.ssh/known_hosts"
     KEY_TITLE: "{{ USER_NAME }}-ansible"
   tasks:
+  - name: create group
+    group:
+      name: "{{ USER_NAME }}"
+      state: present
+  
   - name: create user
     user:
       name: "{{ USER_NAME }}"
-      groups: sudo
+      groups: "{{ USER_NAME }}"
       shell: /bin/bash
       append: yes
       state: present         
@@ -133,22 +138,23 @@
       dest: "{{CLONE_DEST}}/.env"
       owner: cm
       group: cm
-
+  
+  - name: Ensures user systemd dir exists
+    file: 
+      path: "{{ HOME_PATH }}/.config/systemd/user"
+      state: directory
+      owner: habitat
+      group: habitat
+  
   - name: Copy systemd service file to server
     copy:
       src: habitat-py.service
-      dest: /etc/systemd/system
-      owner: root
-      group: root
+      dest: "{{ HOME_PATH }}/.config/systemd/user/habitat-py.service"
+      owner: habitat
+      group: habitat
       
-  - name: Enable service 
-    ansible.builtin.systemd:
-      name: habitat-py
-      enabled: yes
-      masked: no
+  - name: Enable user service to start at boot
+    command:
+      cmd: "loginctl enable-linger {{ USER_NAME }}"
       
-  - name: Make sure hook service unit is running
-    ansible.builtin.systemd:
-      state: started
-      name: habitat-py
       
