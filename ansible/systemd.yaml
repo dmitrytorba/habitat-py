@@ -18,15 +18,10 @@
     KNOWN_HOSTS_PATH: "{{ HOME_PATH }}/.ssh/known_hosts"
     KEY_TITLE: "{{ USER_NAME }}-ansible"
   tasks:
-  - name: create group
-    group:
-      name: "{{ USER_NAME }}"
-      state: present
-  
   - name: create user
     user:
       name: "{{ USER_NAME }}"
-      groups: "{{ USER_NAME }}"
+      groups: sudo
       shell: /bin/bash
       append: yes
       state: present         
