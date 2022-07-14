@@ -19,6 +19,7 @@
     KNOWN_HOSTS_PATH: "{{ HOME_PATH }}/.ssh/known_hosts"
     KEY_TITLE: "{{ USER_NAME }}-ansible"
   tasks:
+    # TODO: generate key `ssh-keygen -f habitat-prod.pem -t ed25519`
     # https://docs.github.com/en/rest/actions/secrets#get-a-repository-public-key
     - name: Get GitHub secrets encryption key
       uri:
@@ -30,6 +31,7 @@
           Content-Type: "application/json"
           Authorization: "token {{ GITHUB_ACCESS_TOKEN }}"
         register: github_encryption_key
+    # TODO: run this script locally with the newly generated key
     # https://docs.github.com/en/rest/actions/secrets#create-or-update-a-repository-secret
     - name: Encrypt key
       command: "./encrypt-github.py {{ github_encryption_key.stdout }} {{ KEY_PATH }}"
@@ -46,3 +48,4 @@
         headers:
           Content-Type: "application/json"
           Authorization: "token {{ GITHUB_ACCESS_TOKEN }}"
+    # TODO: copy public key to authorized_keys
