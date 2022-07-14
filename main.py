@@ -6,6 +6,7 @@ import requests
 load_dotenv()
 
 app = FastAPI()
+print("FastAPI started")
 
 @app.get("/habitat/")
 async def root():
