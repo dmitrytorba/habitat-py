@@ -14,6 +14,7 @@ pip install -r requirements.txt
 ## develop
 
 ```bash
+source habitat.venv/bin/activate
 uvicorn main:app --reload
 ```
 

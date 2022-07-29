@@ -44,3 +44,26 @@ async def lowBattery(device):
   msg = "low battery {}".format(device)
   print(msg)
   return {"message": msg}
+  
+officeMotion = False
+
+@app.get("/office/motion/active")
+async def officeMotionActive():
+  global officeMotion
+  officeMotion = True
+  print("officeMotionActive")
+  return {"officeMotion": officeMotion}
+  
+@app.get("/office/motion/inactive")
+async def officeMotionInactive():
+  global officeMotion
+  officeMotion = False
+  print("officeMotionActive")
+  return {"officeMotion": officeMotion}
+  
+officeMotionId = 294
+
+@app.get("/office")
+async def officeStatus():
+  print("officeStatus")
+  return {"officeMotion": officeMotion}
