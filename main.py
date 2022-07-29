@@ -63,7 +63,30 @@ async def officeMotionInactive():
   
 officeMotionId = 294
 
+# node_power_supply_online
+
+p52IsActive = False
+
+@app.get("/habitat/p52/active")
+async def p52Active():
+  global p52IsActive
+  p52IsActive = True
+  print("p52Active")
+  return {"p52IsActive": p52IsActive}
+  
+@app.get("/habitat/p52/inactive")
+async def p52Inactive():
+  global p52IsActive
+  p52IsActive = False
+  print("p52Inactive")
+  return {"p52IsActive": p52IsActive}
+  
 @app.get("/habitat/office")
 async def officeStatus():
   print("officeStatus")
-  return {"officeMotion": officeMotion}
+  return {
+    "officeMotion": officeMotion,
+    "p52IsActive": p52IsActive
+  }
+  
+  
