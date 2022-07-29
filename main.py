@@ -47,14 +47,14 @@ async def lowBattery(device):
   
 officeMotion = False
 
-@app.get("/office/motion/active")
+@app.get("/habitat/office/motion/active")
 async def officeMotionActive():
   global officeMotion
   officeMotion = True
   print("officeMotionActive")
   return {"officeMotion": officeMotion}
   
-@app.get("/office/motion/inactive")
+@app.get("/habitat/office/motion/inactive")
 async def officeMotionInactive():
   global officeMotion
   officeMotion = False
@@ -63,7 +63,7 @@ async def officeMotionInactive():
   
 officeMotionId = 294
 
-@app.get("/office")
+@app.get("/habitat/office")
 async def officeStatus():
   print("officeStatus")
   return {"officeMotion": officeMotion}
