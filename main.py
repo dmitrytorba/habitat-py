@@ -5,6 +5,9 @@ import requests
 
 load_dotenv()
 
+token = os.getenv('HUBITAT_API_TOKEN')
+hubitatApi = os.getenv('HUBITAT_API_BASE')
+
 app = FastAPI()
 print("FastAPI started")
 
@@ -51,6 +54,7 @@ officeMotion = False
 async def officeMotionActive():
   global officeMotion
   officeMotion = True
+  officeLights()
   print("officeMotionActive")
   return {"officeMotion": officeMotion}
   
@@ -58,19 +62,33 @@ async def officeMotionActive():
 async def officeMotionInactive():
   global officeMotion
   officeMotion = False
+  officeLights()
   print("officeMotionActive")
   return {"officeMotion": officeMotion}
   
 officeMotionId = 294
 
+# prometheus node_exporter:
 # node_power_supply_online
 
 p52IsActive = False
+
+def officeLights():
+  if p52IsActive or officeMotion:
+    requests.get("{}488/on?access_token={}".format(hubitatApi, token))
+    requests.get("{}489/on?access_token={}".format(hubitatApi, token))
+    print("officeLights on")
+    
+  if not p52IsActive and not officeMotion:
+    requests.get("{}488/off?access_token={}".format(hubitatApi, token))
+    requests.get("{}489/off?access_token={}".format(hubitatApi, token))
+    print("officeLights off")
 
 @app.get("/habitat/p52/active")
 async def p52Active():
   global p52IsActive
   p52IsActive = True
+  officeLights()
   print("p52Active")
   return {"p52IsActive": p52IsActive}
   
@@ -78,6 +96,7 @@ async def p52Active():
 async def p52Inactive():
   global p52IsActive
   p52IsActive = False
+  officeLights()
   print("p52Inactive")
   return {"p52IsActive": p52IsActive}
   
