@@ -1,0 +1,14 @@
+[Unit]
+Description = Habitat Dbus Python Hook
+After = network.target
+
+[Service]
+User = d
+Group = d
+WorkingDirectory = /storage/tree_inc/habitat-py/
+ExecStart = /storage/tree_inc/habitat-py/habitat.venv/bin/python /storage/tree_inc/habitat-py/dbus.py
+EnvironmentFile = /storage/tree_inc/habitat-py/.env
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

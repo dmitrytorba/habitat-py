@@ -139,19 +139,19 @@
 
   - name: Copy systemd service file to server
     copy:
-      src: habitat-py.service
+      src: "{{ PROJECT_NAME }}.service"
       dest: /etc/systemd/system
       owner: root
       group: root
-      
-  - name: Enable service 
+
+  - name: Enable service
     ansible.builtin.systemd:
-      name: habitat-py
+      name: "{{ PROJECT_NAME }}"
       enabled: yes
       masked: no
-      
+
   - name: Make sure hook service unit is running
     ansible.builtin.systemd:
       state: started
-      name: habitat-py
+      name: "{{ PROJECT_NAME }}"
       
