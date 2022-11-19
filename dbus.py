@@ -5,6 +5,8 @@ import requests
 cmd = subprocess.Popen(["dbus-monitor \"type='signal',interface="
                         "'org.gnome.ScreenSaver'\""], shell=True,
                        stdout=subprocess.PIPE)
+                       
+response = requests.get("https://sf8do.mooo.com/habitat/p52/active")
 
 while True:
     out = cmd.stdout.readline()

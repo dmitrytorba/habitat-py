@@ -71,17 +71,20 @@ officeMotionId = 294
 # prometheus node_exporter:
 # node_power_supply_online
 
+officeMonitorId = 534
+officeCeilingLightId = 65
+
 p52IsActive = False
 
 def officeLights():
   if p52IsActive or officeMotion:
-    requests.get("{}488/on?access_token={}".format(hubitatApi, token))
-    requests.get("{}489/on?access_token={}".format(hubitatApi, token))
+    requests.get("{}{}/on?access_token={}".format(hubitatApi, officeMonitorId, token))
+    requests.get("{}{}/on?access_token={}".format(hubitatApi, officeCeilingLightId, token))
     print("officeLights on")
     
   if not p52IsActive and not officeMotion:
-    requests.get("{}488/off?access_token={}".format(hubitatApi, token))
-    requests.get("{}489/off?access_token={}".format(hubitatApi, token))
+    requests.get("{}{}/off?access_token={}".format(hubitatApi, officeMonitorId, token))
+    requests.get("{}{}/off?access_token={}".format(hubitatApi, officeCeilingLightId, token))
     print("officeLights off")
 
 @app.get("/habitat/p52/active")
@@ -108,4 +111,5 @@ async def officeStatus():
     "p52IsActive": p52IsActive
   }
   
-  
+async def getAllDevices():
+  requests.get("{}/all?access_token={}".format(hubitatApi, token))
