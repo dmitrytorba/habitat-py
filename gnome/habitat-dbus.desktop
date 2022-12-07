@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Habitat DBus Service
+Comment=using laptop as a motion sensor
+Exec=/storage/tree_inc/habitat-py/habitat.venv/bin/python /storage/tree_inc/habitat-py/dbus.py
+Icon=habitat
+Terminal=true
+Categories=Utility;RemoteAccess;
+Keywords=keyboard;mouse;sharing;network;share;
