@@ -84,11 +84,10 @@ officeCeilingNorthLightId = 630
 
 p52IsActive = False
 
-
 def officeLights():
     if p52IsActive or officeMotion:
-        requests.get(
-            "{}{}/on?access_token={}".format(hubitatApi, officeMonitorId, token))
+        # requests.get(
+        #     "{}{}/on?access_token={}".format(hubitatApi, officeMonitorId, token))
         requests.get("{}{}/on?access_token={}".format(hubitatApi,
                      officeCeilingSouthLightId, token))
         requests.get("{}{}/on?access_token={}".format(hubitatApi,
@@ -96,8 +95,8 @@ def officeLights():
         print("officeLights on")
 
     if not p52IsActive and not officeMotion:
-        requests.get(
-            "{}{}/off?access_token={}".format(hubitatApi, officeMonitorId, token))
+        # requests.get(
+        #     "{}{}/off?access_token={}".format(hubitatApi, officeMonitorId, token))
         requests.get("{}{}/off?access_token={}".format(hubitatApi,
                      officeCeilingSouthLightId, token))
         requests.get("{}{}/off?access_token={}".format(hubitatApi,
