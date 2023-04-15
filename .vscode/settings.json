@@ -1,0 +1,21 @@
+{
+  "editor.tabSize": 2,
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.formatOnSave": false
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.blackArgs": ["--line-length", "120"],
+  "python.formatting.provider": "black",
+  "cSpell.words": ["davinci"],
+  "editor.formatOnSave": true
+}
