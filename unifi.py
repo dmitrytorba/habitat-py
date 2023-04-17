@@ -4,6 +4,8 @@ import os
 
 load_dotenv()
 
+# https://github.com/nickovs/unificontrol
+
 unifi = UnifiClient(
     host="net.ntreesolutions.com",
     port=443,
@@ -35,4 +37,6 @@ def get_clients():
     return clients
 
 
-unblock_tablets()
+if __name__ == "__main__":
+    block_tablets()
+    # unblock_tablets()
