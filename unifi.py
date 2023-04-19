@@ -20,11 +20,13 @@ ipad4g = "20:7d:74:43:d3:6c"
 
 
 def block_tablets():
+    print("blocking tablets")
     unifi.block_client(ipad97)
     unifi.block_client(ipad4g)
 
 
 def unblock_tablets():
+    print("unblocking tablets")
     unifi.unblock_client(ipad97)
     unifi.unblock_client(ipad4g)
 
