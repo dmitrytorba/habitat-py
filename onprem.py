@@ -18,7 +18,7 @@ async def alive():
 schedule.every().day.at("07:00").do(unblock_tablets)
 schedule.every().day.at("08:25").do(block_tablets)
 schedule.every().day.at("12:30").do(unblock_tablets)
-schedule.every().day.at("22:45").do(block_tablets)
+schedule.every().day.at("20:45").do(block_tablets)
 
 while True:
     schedule.run_pending()
