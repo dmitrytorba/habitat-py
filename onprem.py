@@ -21,5 +21,12 @@ schedule.every().day.at("12:30").do(unblock_tablets)
 schedule.every().day.at("20:45").do(block_tablets)
 
 while True:
+    n = schedule.idle_seconds()
+    if n is None:
+        # no more jobs
+        break
+    elif n > 0:
+        # sleep exactly the right amount of time
+        print(f"{n} seconds until next job, sleeping")
+        time.sleep(n)
     schedule.run_pending()
-    time.sleep(1)
