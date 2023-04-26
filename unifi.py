@@ -1,3 +1,4 @@
+import logging
 from dotenv import load_dotenv
 from unificontrol import UnifiClient
 import os
@@ -20,13 +21,13 @@ ipad4g = "20:7d:74:43:d3:6c"
 
 
 def block_tablets():
-    print("blocking tablets")
+    logging.info("blocking tablets")
     unifi.block_client(ipad97)
     unifi.block_client(ipad4g)
 
 
 def unblock_tablets():
-    print("unblocking tablets")
+    logging.info("unblocking tablets")
     unifi.unblock_client(ipad97)
     unifi.unblock_client(ipad4g)
 
@@ -40,5 +41,5 @@ def get_clients():
 
 
 if __name__ == "__main__":
-    block_tablets()
-    # unblock_tablets()
+    # block_tablets()
+    unblock_tablets()
