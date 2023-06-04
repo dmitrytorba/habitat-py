@@ -5,10 +5,10 @@ Scripts for the home
 ## setup
 
 ```bash
-python3 -m venv habitat.venv 
+python3 -m venv habitat.venv
 source habitat.venv/bin/activate
 pip install wheel
-pip install -r requirements.txt   
+pip install -r requirements.txt
 ```
 
 ## develop
@@ -16,6 +16,12 @@ pip install -r requirements.txt
 ```bash
 source habitat.venv/bin/activate
 uvicorn main:app --reload
+```
+
+On prem app:
+
+```bash
+uvicorn onprem:app --reload
 ```
 
 ## serve
