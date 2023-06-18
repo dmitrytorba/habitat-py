@@ -2,6 +2,8 @@ import logging
 from dotenv import load_dotenv
 from unificontrol import UnifiClient
 import os
+import discord_chat
+import asyncio
 
 load_dotenv()
 
@@ -22,12 +24,14 @@ ipad4g = "20:7d:74:43:d3:6c"
 
 def block_tablets():
     logging.info("blocking tablets")
+    asyncio.create_task(discord_chat.send_message("Toly's internet is now terminated."))
     unifi.block_client(ipad97)
     unifi.block_client(ipad4g)
 
 
 def unblock_tablets():
     logging.info("unblocking tablets")
+    asyncio.create_task(discord_chat.send_message("Toly's internet is back."))
     unifi.unblock_client(ipad97)
     unifi.unblock_client(ipad4g)
 

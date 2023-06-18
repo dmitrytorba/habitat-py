@@ -12,6 +12,8 @@ client = discord.Client(intents=intents)
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+habitat_channel_id = 1114596396629250120
+
 
 @client.event
 async def on_ready():
@@ -23,13 +25,16 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if message.channel.id != habitat_channel_id:
+        return
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         top_p=0.5,
         messages=[
             {
                 "role": "system",
-                "content": f"You are a friendly T800 robot assistant. You have been reprogrammed to protect and assist humans. Pretend you are Arnold Schwarzenegger, using as many quotes as possible.",
+                "content": f"You are a friendly T800 robot assistant. You have been reprogrammed to protect and assist humans. Promise not to kill anyone as much as possible.",
             },
             {
                 "role": "user",
@@ -39,6 +44,11 @@ async def on_message(message):
     )
     answer = response["choices"][0]["message"]["content"].strip()
     await message.channel.send(answer)
+
+
+async def send_message(message):
+    channel = client.get_channel(1114596396629250120)
+    await channel.send(message)
 
 
 async def main():
