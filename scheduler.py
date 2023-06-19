@@ -5,10 +5,9 @@ import asyncio
 import discord_chat
 import asyncio
 import logging
+from hubitat import mylo_pc
 
-schedule.every().day.at("07:00").do(unblock_tablets)
-schedule.every().day.at("08:25").do(block_tablets)
-schedule.every().day.at("12:30").do(unblock_tablets)
+schedule.every().day.at("08:00").do(unblock_tablets)
 schedule.every().day.at("20:45").do(block_tablets)
 
 
@@ -21,7 +20,15 @@ def mylo_sleep_warning():
     )
 
 
-schedule.every().day.at("20:40").do(mylo_sleep_warning)
+def mylo_sleep_off():
+    mylo_pc("off")
+    asyncio.create_task(
+        discord_chat.send_message("Hasta la vista, Mylo PC is now terminated.")
+    )
+
+
+schedule.every().day.at("21:10").do(mylo_sleep_warning)
+schedule.every().day.at("21:15").do(mylo_sleep_off)
 
 
 async def main():
