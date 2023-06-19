@@ -7,7 +7,7 @@ import asyncio
 import logging
 from hubitat import mylo_pc
 
-schedule.every().day.at("08:00").do(unblock_tablets)
+schedule.every().day.at("12:00").do(unblock_tablets)
 schedule.every().day.at("20:45").do(block_tablets)
 
 
