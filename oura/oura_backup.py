@@ -2,7 +2,6 @@ import requests
 import json
 import pandas as pd
 from datetime import datetime, timedelta, date
-from oura.v2 import OuraClientDataFrameV2
 from dotenv import load_dotenv
 import os
 
@@ -17,27 +16,6 @@ def fetch(url, params):
         print(response.text)
         return
     return response
-
-
-def heartrate(start, end, filename):
-    frame_end = end
-    frame_start = frame_end - timedelta(days=29)
-    df = pd.DataFrame()
-
-    while start < frame_end:
-        print("frame_start: ", frame_start)
-        print("frame_end: ", frame_end)
-        params = {"start_datetime": frame_start, "end_datetime": frame_end}
-        response = fetch("https://api.ouraring.com/v2/usercollection/heartrate", params)
-        json_object = json.loads(response.text)
-        frame = pd.json_normalize(json_object["data"])
-        df = pd.concat([df, frame])
-        frame_end = frame_start
-        frame_start = frame_end - timedelta(days=29)
-        if start > frame_start:
-            frame_start = start
-
-    df.to_csv(filename)
 
 
 def backup(start, end, filename, url):
@@ -64,18 +42,50 @@ def backup(start, end, filename, url):
     df.to_csv(filename)
 
 
-def lib_daily():
-    v2 = OuraClientDataFrameV2(personal_access_token=token)
-
-    # daily = v2.activity_df(start="2022-01-01", end="2022-04-01")
-    heartrate = v2.heart_rate_df(start="2022-01-01", end="2023-01-01")
-    heartrate.to_csv("heartrate.csv")
-
-
 if __name__ == "__main__":
-    # heartrate(datetime(2023, 1, 1), datetime.now(), "heartrate_2023.csv")
-    # heartrate(datetime(2022, 1, 1), datetime(2022, 12, 31), "heartrate_2022.csv")
+    backup(
+        datetime(2023, 1, 1),
+        datetime.now(),
+        "heartrate_2023.csv",
+        "https://api.ouraring.com/v2/usercollection/heartrate",
+    )
+    backup(
+        datetime(2022, 1, 1),
+        datetime(2022, 12, 31),
+        "heartrate_2022.csv",
+        "https://api.ouraring.com/v2/usercollection/heartrate",
+    )
 
     backup(
         date(2023, 1, 1), date.today(), "activity_2023.csv", "https://api.ouraring.com/v2/usercollection/daily_activity"
+    )
+
+    backup(
+        date(2022, 1, 1),
+        date(2022, 12, 31),
+        "activity_2022.csv",
+        "https://api.ouraring.com/v2/usercollection/daily_activity",
+    )
+
+    backup(
+        date(2023, 1, 1),
+        date.today(),
+        "readiness_2023.csv",
+        "https://api.ouraring.com/v2/usercollection/daily_readiness",
+    )
+
+    backup(
+        date(2022, 1, 1),
+        date(2022, 12, 31),
+        "readiness_2022.csv",
+        "https://api.ouraring.com/v2/usercollection/daily_readiness",
+    )
+
+    backup(date(2023, 1, 1), date.today(), "sleep_2023.csv", "https://api.ouraring.com/v2/usercollection/daily_sleep")
+
+    backup(
+        date(2022, 1, 1),
+        date(2022, 12, 31),
+        "sleep_2022.csv",
+        "https://api.ouraring.com/v2/usercollection/daily_sleep",
     )
