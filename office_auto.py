@@ -21,13 +21,18 @@ def office_status():
     }
 
 
-def p52_status():
+def p52_active():
+    response = requests.get("https://sf8do.mooo.com/habitat/office")
+    return response.json()["p52IsActive"]
+
+
+def clockify_active():
     response = requests.get("https://sf8do.mooo.com/habitat/office")
     return response.json()["p52IsActive"]
 
 
 def is_active():
-    return p52_status() and is_motion("office_motion")
+    return p52_active() or is_motion("office_motion") or clockify_active()
 
 
 def lights_on():

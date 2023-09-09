@@ -6,7 +6,7 @@ import discord_chat
 import asyncio
 import logging
 from hubitat import mylo_pc
-from office import office_housekeeping
+from office_auto import office_housekeeping
 
 
 def mylo_sleep_warning():
@@ -24,7 +24,7 @@ def mylo_sleep_off():
 
 
 def five_minutes():
-    logging.info("Five minutes")
+    print("Five minutes")
     office_housekeeping()
 
 
