@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import scheduler
 import asyncio
 import logging
+from office_auto import office_status
 
 load_dotenv()
 
@@ -23,5 +24,10 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/alive")
-async def alive(lifespan=lifespan):
+async def alive():
     return {"message": "OK"}
+
+
+@app.get("/office")
+async def office():
+    return office_status()

@@ -19,8 +19,10 @@ lights_activated = False
 
 
 def office_status():
+    office_housekeeping()
     return {
         "last_active": last_active,
+        "lights_activated": lights_activated,
     }
 
 
