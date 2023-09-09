@@ -67,5 +67,5 @@ def office_housekeeping():
         if last_active is not None:
             elapsed = time.time() - last_active
             print("Office is not active, last active: {}".format(elapsed))
-            if lights_activated and elapsed > 30:
+            if lights_activated and elapsed > thirty_minutes:
                 lights_off()
