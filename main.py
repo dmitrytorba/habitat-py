@@ -5,8 +5,8 @@ import requests
 
 load_dotenv()
 
-p52IsActive = False
-clockify_running = False
+p52_active = False
+clockify_active = False
 
 token = os.getenv("HUBITAT_API_TOKEN")
 hubitatApi = os.getenv("HUBITAT_API_BASE")
@@ -65,18 +65,18 @@ async def getAllDevices():
 
 @app.get("/habitat/p52/active")
 async def p52Active():
-    global p52IsActive
-    p52IsActive = True
-    return {"p52IsActive": p52IsActive}
+    global p52_active
+    p52_active = True
+    return {"p52_active": p52_active}
 
 
 @app.get("/habitat/p52/inactive")
 async def p52Inactive():
-    global p52IsActive
-    p52IsActive = False
-    return {"p52IsActive": p52IsActive}
+    global p52_active
+    p52_active = False
+    return {"p52_active": p52_active}
 
 
 @app.get("/habitat/office")
 async def officeStatus():
-    return {"p52IsActive": p52IsActive, "clockify_running": clockify_running}
+    return {"p52_active": p52_active, "clockify_active": clockify_active}

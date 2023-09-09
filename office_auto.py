@@ -21,18 +21,14 @@ def office_status():
     }
 
 
-def p52_active():
+def get_cloud_status():
     response = requests.get("https://sf8do.mooo.com/habitat/office")
-    return response.json()["p52IsActive"]
-
-
-def clockify_active():
-    response = requests.get("https://sf8do.mooo.com/habitat/office")
-    return response.json()["p52IsActive"]
+    return response.json()
 
 
 def is_active():
-    return p52_active() or is_motion("office_motion") or clockify_active()
+    cloud_status = get_cloud_status()
+    return cloud_status["p52_active"] or cloud_status["clockify_active"] or is_motion("office_motion")
 
 
 def lights_on():
@@ -49,6 +45,7 @@ def lights_off():
 
 def office_housekeeping():
     global last_active
+    logging.getLogger("asyncio").info("Office housekeeping")
     print("Office housekeeping")
     if is_active():
         last_active = time.time()
