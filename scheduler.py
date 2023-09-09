@@ -38,7 +38,7 @@ schedule.every(1).minutes.do(five_minutes)
 async def main():
     # logger does not work here
     print("Scheduler started")
-    logging.error("Scheduler started")
+    logging.info("Scheduler started")
     while True:
         n = schedule.idle_seconds()
         if n is None:

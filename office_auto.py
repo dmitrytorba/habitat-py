@@ -13,6 +13,7 @@ load_dotenv()
 # node_power_supply_online
 
 last_active = None
+lights_activated = False
 
 
 def office_status():
@@ -35,12 +36,16 @@ def is_active():
 
 
 def lights_on():
+    global lights_activated
+    lights_activated = True
     switch("office_ceiling_south", "on")
     switch("office_monitor", "on")
     switch("office_standing", "on")
 
 
 def lights_off():
+    global lights_activated
+    lights_activated = False
     switch("office_ceiling_south", "off")
     switch("office_monitor", "off")
     switch("office_standing", "off")
@@ -52,5 +57,10 @@ def office_housekeeping():
     if is_active():
         last_active = time.time()
         print("Office is active")
+        if not lights_activated:
+            lights_on()
     else:
-        print("Office is not active, last active: {}".format(last_active))
+        elapsed = time.time() - last_active
+        print("Office is not active, last active: {}".format(elapsed))
+        if lights_activated and elapsed > 30 * 60:
+            lights_off()

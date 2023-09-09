@@ -4,6 +4,7 @@ import discord_chat
 from contextlib import asynccontextmanager
 import scheduler
 import asyncio
+import logging
 
 load_dotenv()
 
@@ -11,6 +12,7 @@ load_dotenv()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("FastAPI started")
+    logging.getLogger("asyncio").setLevel(logging.INFO)
     asyncio.create_task(discord_chat.main())
     asyncio.create_task(scheduler.main())
     yield
