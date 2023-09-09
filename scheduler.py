@@ -43,6 +43,7 @@ async def main():
         n = schedule.idle_seconds()
         if n is None:
             # no more jobs
+            print("No more jobs, exiting")
             break
         elif n > 0:
             # sleep exactly the right amount of time

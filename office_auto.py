@@ -41,6 +41,7 @@ def lights_on():
     switch("office_ceiling_south", "on")
     switch("office_monitor", "on")
     switch("office_standing", "on")
+    print("Lights on")
 
 
 def lights_off():
@@ -49,6 +50,7 @@ def lights_off():
     switch("office_ceiling_south", "off")
     switch("office_monitor", "off")
     switch("office_standing", "off")
+    print("Lights off")
 
 
 def office_housekeeping():
