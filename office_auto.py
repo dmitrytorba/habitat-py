@@ -12,7 +12,7 @@ load_dotenv()
 # prometheus node_exporter:
 # node_power_supply_online
 
-thirty_minutes = 30 * 60
+light_timeout = 15 * 60
 
 last_active = None
 lights_activated = False
@@ -67,5 +67,5 @@ def office_housekeeping():
         if last_active is not None:
             elapsed = time.time() - last_active
             print("Office is not active, last active: {}".format(elapsed))
-            if lights_activated and elapsed > thirty_minutes:
+            if lights_activated and elapsed > light_timeout:
                 lights_off()
