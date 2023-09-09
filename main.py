@@ -5,6 +5,9 @@ import requests
 
 load_dotenv()
 
+p52IsActive = False
+clockify_running = False
+
 token = os.getenv("HUBITAT_API_TOKEN")
 hubitatApi = os.getenv("HUBITAT_API_BASE")
 
@@ -20,6 +23,8 @@ async def root():
 # any timer started
 @app.post("/habitat/clockify/start")
 async def timeIn():
+    global clockify_running
+    clockify_running = True
     requests.get(os.getenv("HUBITAT_CLOCK_IN"))
     return {"message": "started"}
 
@@ -27,6 +32,8 @@ async def timeIn():
 # any timer stopped
 @app.post("/habitat/clockify/stop")
 async def timeOut():
+    global clockify_running
+    clockify_running = False
     requests.get(os.getenv("HUBITAT_CLOCK_OUT"))
     return {"message": "stopped"}
 
@@ -56,9 +63,6 @@ async def getAllDevices():
     requests.get("{}/all?access_token={}".format(hubitatApi, token))
 
 
-p52IsActive = False
-
-
 @app.get("/habitat/p52/active")
 async def p52Active():
     global p52IsActive
@@ -75,4 +79,4 @@ async def p52Inactive():
 
 @app.get("/habitat/office")
 async def officeStatus():
-    return {"p52IsActive": p52IsActive}
+    return {"p52IsActive": p52IsActive, "clockify_running": clockify_running}
