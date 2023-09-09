@@ -24,6 +24,7 @@ def mylo_sleep_off():
 
 
 def five_minutes():
+    logging.info("Five minutes")
     office_housekeeping()
 
 
@@ -31,7 +32,7 @@ schedule.every().day.at("12:00").do(unblock_tablets)
 schedule.every().day.at("20:45").do(block_tablets)
 schedule.every().day.at("21:10").do(mylo_sleep_warning)
 schedule.every().day.at("21:15").do(mylo_sleep_off)
-schedule.every(5).minutes.do(five_minutes)
+schedule.every(1).minutes.do(five_minutes)
 
 
 async def main():
