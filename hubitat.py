@@ -32,9 +32,12 @@ def switch(device, command):
 
 def get_attribute(device, attribute):
     device_id = hubitat_ids[device]
-    response = requests.get("{}{}/{}?access_token={}".format(hubitat_api, device_id, "status", token))
-    attrubutes = response.json()["attributes"]
-    for attribute in attrubutes:
+    response = requests.get("{}{}?access_token={}".format(hubitat_api, device_id, token))
+    if response.status_code != 200:
+        logging.error(response.text)
+        return None
+    attributes = response.json()["attributes"]
+    for attribute in attributes:
         if attribute["name"] == attribute:
             return attribute["currentValue"]
     return None
