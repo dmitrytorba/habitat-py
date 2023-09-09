@@ -49,9 +49,9 @@ def lights_off():
 
 def office_housekeeping():
     global last_active
-    logging.info("Office housekeeping")
+    print("Office housekeeping")
     if is_active():
         last_active = time.time()
-        logging.info("Office is active")
+        print("Office is active")
     else:
-        logging.info("Office is not active, last active: {}".format(last_active))
+        print("Office is not active, last active: {}".format(last_active))
