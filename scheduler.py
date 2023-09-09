@@ -24,7 +24,7 @@ def mylo_sleep_off():
 
 
 def five_minutes():
-    asyncio.create_task(office_housekeeping())
+    office_housekeeping()
 
 
 schedule.every().day.at("12:00").do(unblock_tablets)

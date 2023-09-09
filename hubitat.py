@@ -6,12 +6,14 @@ import logging
 
 load_dotenv()
 
-toly_internet = 640
-mylo_pc_id = 558
-
-office_monitor = 625
-office_ceiling_south = 65
-office_ceiling_north = 630
+hubitat_ids = {
+    "toly_internet": 640,
+    "mylo_pc": 558,
+    "office_monitor": 625,
+    "office_ceiling_south": 65,
+    "office_motion": 294,
+    "office_standing": 456,
+}
 
 token = os.getenv("HUBITAT_API_TOKEN")
 hubitat_api = "http://192.168.1.179/apps/api/611/devices/"
@@ -19,7 +21,27 @@ hubitat_api = "http://192.168.1.179/apps/api/611/devices/"
 
 def mylo_pc(command):
     logging.info("mylo pc {}".format(command))
-    requests.get("{}{}/{}?access_token={}".format(hubitat_api, mylo_pc_id, command, token))
+    requests.get("{}{}/{}?access_token={}".format(hubitat_api, hubitat_ids["mylo_pc"], command, token))
+
+
+def switch(device, command):
+    logging.info("switch {} {}".format(device, command))
+    device_id = hubitat_ids[device]
+    requests.get("{}{}/{}?access_token={}".format(hubitat_api, device_id, command, token))
+
+
+def get_attribute(device, attribute):
+    device_id = hubitat_ids[device]
+    response = requests.get("{}{}/{}?access_token={}".format(hubitat_api, device_id, "status", token))
+    attrubutes = response.json()["attributes"]
+    for attribute in attrubutes:
+        if attribute["name"] == attribute:
+            return attribute["currentValue"]
+    return None
+
+
+def is_motion(device):
+    return get_attribute(device, "motion") == "active"
 
 
 if __name__ == "__main__":
