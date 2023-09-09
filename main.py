@@ -23,8 +23,8 @@ async def root():
 # any timer started
 @app.post("/habitat/clockify/start")
 async def timeIn():
-    global clockify_running
-    clockify_running = True
+    global clockify_active
+    clockify_active = True
     requests.get(os.getenv("HUBITAT_CLOCK_IN"))
     return {"message": "started"}
 
@@ -32,8 +32,8 @@ async def timeIn():
 # any timer stopped
 @app.post("/habitat/clockify/stop")
 async def timeOut():
-    global clockify_running
-    clockify_running = False
+    global clockify_active
+    clockify_active = False
     requests.get(os.getenv("HUBITAT_CLOCK_OUT"))
     return {"message": "stopped"}
 

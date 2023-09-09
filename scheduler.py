@@ -38,12 +38,13 @@ schedule.every(1).minutes.do(five_minutes)
 async def main():
     # logger does not work here
     print("Scheduler started")
+    logging.error("Scheduler started")
     while True:
         n = schedule.idle_seconds()
         if n is None:
             # no more jobs
             break
-        elif n > 5:
+        elif n > 0:
             # sleep exactly the right amount of time
             print(f"{n} seconds until next job, sleeping")
             await asyncio.sleep(n)

@@ -28,7 +28,10 @@ def get_cloud_status():
 
 def is_active():
     cloud_status = get_cloud_status()
-    return cloud_status["p52_active"] or cloud_status["clockify_active"] or is_motion("office_motion")
+    office_motion = is_motion("office_motion")
+    print("cloud_status", cloud_status)
+    print("office_motion", office_motion)
+    return cloud_status["p52_active"] or cloud_status["clockify_active"] or office_motion
 
 
 def lights_on():
@@ -45,7 +48,6 @@ def lights_off():
 
 def office_housekeeping():
     global last_active
-    logging.getLogger("asyncio").info("Office housekeeping")
     print("Office housekeeping")
     if is_active():
         last_active = time.time()
