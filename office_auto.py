@@ -19,7 +19,7 @@ lights_activated = False
 
 
 def office_status():
-    office_housekeeping()
+    office_housekeeping(force=True)
     return {
         "last_active": last_active,
         "lights_activated": lights_activated,
@@ -57,10 +57,10 @@ def lights_off():
     print("Lights off")
 
 
-def office_housekeeping():
+def office_housekeeping(force=False):
     global last_active
     print("Office housekeeping")
-    if is_active():
+    if is_active() or force:
         last_active = time.time()
         print("Office is active")
         if not lights_activated:
