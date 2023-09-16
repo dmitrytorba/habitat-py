@@ -15,14 +15,12 @@ load_dotenv()
 light_timeout = 15 * 60
 
 last_active = None
-lights_activated = False
 
 
 def office_status():
     office_housekeeping(force=True)
     return {
         "last_active": last_active,
-        "lights_activated": lights_activated,
     }
 
 
@@ -40,8 +38,6 @@ def is_active():
 
 
 def lights_on():
-    global lights_activated
-    lights_activated = True
     switch("office_ceiling_south", "on")
     switch("office_monitor", "on")
     switch("office_standing", "on")
@@ -49,8 +45,6 @@ def lights_on():
 
 
 def lights_off():
-    global lights_activated
-    lights_activated = False
     switch("office_ceiling_south", "off")
     switch("office_monitor", "off")
     switch("office_standing", "off")
@@ -63,11 +57,10 @@ def office_housekeeping(force=False):
     if is_active() or force:
         last_active = time.time()
         print("Office is active")
-        if not lights_activated:
-            lights_on()
+        lights_on()
     else:
         if last_active is not None:
             elapsed = time.time() - last_active
             print("Office is not active, last active: {}".format(elapsed))
-            if lights_activated and elapsed > light_timeout:
+            if elapsed > light_timeout:
                 lights_off()
