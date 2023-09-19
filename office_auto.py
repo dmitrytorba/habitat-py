@@ -56,6 +56,7 @@ def office_housekeeping(force=False):
     print("Office housekeeping")
     if is_active() or force:
         last_active = time.time()
+        print("force", force)
         print("Office is active")
         lights_on()
     else:
