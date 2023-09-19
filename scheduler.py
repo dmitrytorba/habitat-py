@@ -45,9 +45,9 @@ async def main():
             # no more jobs
             print("No more jobs, exiting")
             break
-        elif n > 0:
+        elif n > 1:
             # sleep exactly the right amount of time
             print(f"{n} seconds until next job, sleeping")
             await asyncio.sleep(n)
-        print("Running pending jobs")
+        print("Running pending jobs", time.time())
         schedule.run_pending()
