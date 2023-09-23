@@ -9,13 +9,16 @@ from office_auto import office_status
 
 load_dotenv()
 
+scheduler_task = None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global scheduler_task
     print("FastAPI started")
     logging.getLogger("asyncio").setLevel(logging.INFO)
     asyncio.create_task(discord_chat.main())
-    asyncio.create_task(scheduler.main())
+    scheduler_task = asyncio.create_task(scheduler.main())
     yield
     print("FastAPI ended")
 
@@ -30,4 +33,6 @@ async def alive():
 
 @app.get("/office")
 async def office():
-    return office_status()
+    status = office_status()
+    print("scheduler task", scheduler_task.cancelled(), scheduler_task.done())
+    return status
